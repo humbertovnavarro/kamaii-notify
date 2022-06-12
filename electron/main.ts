@@ -13,8 +13,8 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 function createWindow () {
   mainWindow = new BrowserWindow({
     // icon: path.join(assetsPath, 'assets', 'icon.png'),
-    width: 1100,
-    height: 700,
+    width: 400,
+    height: 900,
     backgroundColor: '#191622',
     webPreferences: {
       nodeIntegration: false,
@@ -28,12 +28,20 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    setInterval(() => {
+      mainWindow?.webContents.send('notification', {
+        title: 'Notification',
+        body: `This is a notification ${Math.random()}`,
+        thumbnail: 'https://picsum.photos/64/64',
+        timestamp: Date.now()
+      })
+    }, 1000)
+  });
 }
 
 async function registerListeners () {
-  /**
-   * This comes from bridge integration, check bridge.ts
-   */
   ipcMain.on('message', (_, message) => {
     console.log(message)
   })
@@ -55,3 +63,4 @@ app.on('activate', () => {
     createWindow()
   }
 })
+

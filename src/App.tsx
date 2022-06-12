@@ -1,12 +1,22 @@
 import { GlobalStyle } from './styles/GlobalStyle'
-
-import { Greetings } from './components/Greetings'
-
+import { useEffect, useState } from 'react';
+import Notification from './components/Notification';
 export function App() {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  useEffect(() => {
+    window.Main.on("notification", (notification: Notification) => {
+      setNotifications((old) => [...old, notification]);
+    });
+  }, []);
+  useEffect(() => {
+
+  }, [notifications]);
   return (
     <>
       <GlobalStyle />
-      <Greetings />
+        {
+          notifications.map(notification => ((<Notification notification={notification}/>)))
+        }
     </>
   )
 }
